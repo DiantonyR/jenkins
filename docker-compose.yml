@@ -1,0 +1,42 @@
+services:
+
+  mysql:
+    image: mysql
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: diantony33
+      MYSQL_DATABASE: BIBLIOTECA
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3307:3306"
+  backend:
+    image: diantony33/biblioteca-docker2-backend 
+    depends_on:
+      - mysql
+    links:
+      - mysql
+    environment:
+      - DB_HOST=mysql
+      - DB_USER=root
+      - DB_PASSWORD=diantony33
+      - DB_NAME=BIBLIOTECA
+      - DB_PORT=3306
+    ports:
+      - "3000:3000"  
+    
+
+  frontend:
+    image: diantony33/biblioteca-docker2-frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      backend:
+        condition: service_started
+    
+
+
+volumes:
+  db_data:
+  
